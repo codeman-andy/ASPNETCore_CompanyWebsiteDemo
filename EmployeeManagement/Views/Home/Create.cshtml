@@ -1,0 +1,78 @@
+﻿@using EmployeeManagement.Models
+@model EmployeeManagement.ViewModels.HomeCreateViewModel
+
+
+@{
+	ViewBag.Title = "Create Employee";
+}
+
+<!-- enctype="multipart/form-data" allows support for file-upload in this form -->
+<form method="post" enctype="multipart/form-data" class="mt-3" asp-controller="Home" asp-action="Create">
+	<!-- asp-for associates an input to one of the model's properties -->
+	<div class="form-group row">
+		<label asp-for="Name" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<input asp-for="Name" class="form-control" placeholder="Name" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label asp-for="Email" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<input asp-for="Email" class="form-control" placeholder="E-Mail"/>
+			<span asp-validation-for="Email" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label asp-for="Department" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<select class="custom-select mr-sm-2"
+				asp-for="Department"
+				asp-items="Html.GetEnumSelectList<Dept>()">
+					<option value="">Select</option>
+			</select>
+			<span asp-validation-for="Department" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label asp-for="Photo" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<div class="custom-file">
+				<!-- If we wanted to allow for the upload of multiple files, -->
+				<!-- we would only have to add 'multiple' inside this input. -->
+				<input asp-for="Photo" class="form-control custom-file-input" />
+				<label class="custom-file-label">Choose File...</label>
+			</div>
+		</div>
+	</div>
+
+	<div asp-validation-summary="All" class="text-danger"></div>
+
+	<div class="form-group row">
+		<div class="col-sm-10">
+			<button type="submit" class="btn btn-primary">Create</button>
+		</div>
+	</div>
+
+	@section Scripts {
+		<script>
+			$(document).ready(function()
+			{
+				// Here, we're selecting the HTML-element that has the class '.custom-file-input'
+				// Then, we are binding it to the "change" event which will trigger once an image is selected
+				// and thus its text changes, which will...
+				$('.custom-file-input').on("change", function()
+				{
+					// ... execute this code, which will select the name of the file uploaded by the user from the control
+					var file_name = $(this).val().split("\\").pop();
+					// Once we have the filename, we want to display it in the place of the label next to the control
+					// So, to select the corresponding label, we are selecting the element that has the '.custom-file-label'-class
+					$(this).next('.custom-file-label').html(file_name);
+				})
+			});
+		</script>
+	}
+</form>

@@ -1,0 +1,90 @@
+﻿@using EmployeeManagement.Models
+@model EmployeeManagement.ViewModels.HomeEditViewModel
+
+
+@{
+	ViewBag.Title = "Edit Employee";
+
+	var photoPath = "~/images/" + (Model.ExistingPhotoPath ?? "noimage.jpg");
+}
+
+<!-- enctype="multipart/form-data" allows support for file-upload in this form -->
+<form method="post" enctype="multipart/form-data" class="mt-3" asp-controller="Home" asp-action="Edit">
+	<!-- We do not want to the display the ID / PhotoPath of the user on the View, so we're using a hidden field -->
+	<input hidden asp-for="ID"/>
+	<input hidden asp-for="ExistingPhotoPath"/>
+	<!-- asp-for associates an input to one of the model's properties -->
+	<div class="form-group row">
+		<label asp-for="Name" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<!-- Somehow the asp-for tag-helper fetches the current employee's -->
+			<!-- name automatically and displays it as default in the input box -->
+			<input asp-for="Name" class="form-control" placeholder="Name" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label asp-for="Email" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<input asp-for="Email" class="form-control" placeholder="E-Mail" />
+			<span asp-validation-for="Email" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label asp-for="Department" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<select class="custom-select mr-sm-2"
+					asp-for="Department"
+					asp-items="Html.GetEnumSelectList<Dept>()">
+				<option value="">Select</option>
+			</select>
+			<span asp-validation-for="Department" class="text-danger"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label asp-for="Photo" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<div class="custom-file">
+				<!-- If we wanted to allow for the upload of multiple files, -->
+				<!-- we would only have to add 'multiple' inside this input. -->
+				<input asp-for="Photo" class="form-control custom-file-input" />
+				<label class="custom-file-label">Click here to change photo</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group row col-sm-4 offset-4">
+		<img src="@photoPath" class="imageThumbnail" asp-append-version="true" />
+	</div>
+
+	<div asp-validation-summary="All" class="text-danger"></div>
+
+	<div class="form-group row">
+		<div class="col-sm-10">
+			<button type="submit" class="btn btn-primary">Edit</button>
+			<a asp-controller="Home" asp-action="Index" class="btn btn-primary">Cancel</a>
+		</div>
+	</div>
+
+	@section Scripts {
+		<script>
+				$(document).ready(function()
+				{
+					// Here, we're selecting the HTML-element that has the class '.custom-file-input'
+					// Then, we are binding it to the "change" event which will trigger once an image is selected
+					// and thus its text changes, which will...
+					$('.custom-file-input').on("change", function()
+					{
+						// ... execute this code, which will select the name of the file uploaded by the user from the control
+						var file_name = $(this).val().split("\\").pop();
+						// Once we have the filename, we want to display it in the place of the label next to the control
+						// So, to select the corresponding label, we are selecting the element that has the '.custom-file-label'-class
+						$(this).next('.custom-file-label').html(file_name);
+					})
+				});
+		</script>
+	}
+</form>

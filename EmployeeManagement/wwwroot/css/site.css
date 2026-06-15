@@ -1,0 +1,10 @@
+﻿/* For the buttons to have the same width */
+.btn {
+    width: 75px;
+}
+
+/* For images to have the same height in the index-View */
+.imageThumbnail {
+    height: 200px;
+    width: auto;
+}

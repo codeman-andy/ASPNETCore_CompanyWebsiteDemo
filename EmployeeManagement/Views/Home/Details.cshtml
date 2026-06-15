@@ -1,0 +1,45 @@
+﻿@model EmployeeManagement.ViewModels.HomeDetailsViewModel
+
+@{
+	ViewBag.Title = "Employee Details";
+
+	var photoPath = "~/images/" + (Model.Employee.PhotoPath ?? "noimage.jpg");
+}
+
+<div class="row justify-content-center m-3">
+	<div class="col-sm-8">
+		<div class="card">
+			<div class="card-header">
+				<h1>@Model.Employee.Name</h1>
+			</div>
+
+			<div class="card-body text-center">
+				<!-- Image tag-helpers enhance the img-tag by providing cache-busting behavior for static-image files -->
+				<img class="card-img-top" src="@photoPath" asp-append-version="true"/>
+				<!-- Based on the content of the image, a unique cache-value is calculated and appended to the image-URL -->
+				<!-- Each time an image on the server-side is changed, a new hash value is calculated and cached again -->
+
+				<h4>Employee ID: @Model.Employee.ID</h4>
+				<h4>E-Mail: @Model.Employee.Email</h4>
+				<h4>Department: @Model.Employee.Department</h4>
+			</div>
+
+			<div class="card-footer text-center">
+				<!-- An anchor-object cannot have tag-helpers AND the href attribute, as the -->
+				<!-- former will override the latter which constitutes an invalid operation -->
+				<a asp-controller="home" asp-action="index"
+				   class="btn btn-primary">
+				   Back
+			    </a>
+				<a asp-controller="home" asp-action="edit" asp-route-id="@Model.Employee.ID"
+				   class="btn btn-primary">Edit</a>
+				<a href="#" class="btn btn-danger">Delete</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts
+{
+	<script src="~/js/customscript.js"></script>
+}

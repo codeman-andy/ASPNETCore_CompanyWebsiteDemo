@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+
+@inject Microsoft.AspNetCore.Identity.SignInManager<EmployeeManagement.Models.ApplicationUser> signInManager;
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css"/>
+		<script src="~/lib/jquery/jquery.js"></script>
+		<script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <!-- unobtruvise.js allows validation-attributes to be defined in-server and then applied client-side -->
+        <!-- removing our need to write custom .js code to apply client-side validation -->
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <!-- This client-side validation requires JavaScript support from the user's browser to be enabled -->
+		<script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <!-- The 'integrity' attribute is used for SubResource Integrity (SRI) check -->
+        <!-- SRI is a security feature that allows a browser to check if the file being retrieved -->
+        <!-- has been maliciously altered. It is a hash-value that the browser will match against -->
+        <!-- the hash-value retrieved from the file: if both are the same, then the file is valid -->
+        <!-- otherwise the browser will cancel its download. -->
+        <!-- If the file has not been successfully downloaded, the test-attributes will report false -->
+        <!-- (i.e. those attributes are not present in the file), and only then will the mini-fied -->
+        <!-- bootstrap file be downloaded from the source in asp-fallback-href -->
+        <!-- asp-suppress-fallback-integrity turns off SRI for files downloaded from the fallback source -->
+        <!-- In this case the fallback source is present in our server (and we trust our server). If we -->
+        <!-- were to perform an SRI on the fallback source as well, the same hash-value defined in the -->
+        <!-- 'integrity' attribute would be used. -->
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+              integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+              crossorigin="anonymous"
+              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only"
+              asp-fallback-test-property="position"
+              asp-fallback-test-value="absolute"
+              asp-suppress-fallback-integrity="true">
+
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <!-- unobtruvise.js allows validation-attributes to be defined in-server and then applied client-side -->
+        <!-- removing our need to write custom .js code to apply client-side validation -->
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <!-- This client-side validation requires JavaScript support from the user's browser to be enabled -->
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    </environment>
+	<link href="~/css/site.css" rel="stylesheet" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <a class="navbar-brand" asp-controller="home" asp-action="index">
+                <img src="~/images/company_logo_placeholder.webp" height="30" width="30"/>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Index" class="nav-link">List</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Create" class="nav-link">Create</a>
+                    </li>
+
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a href="#" id="navbarDropdownMenuLink" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Manage
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a asp-controller="Administration" asp-action="ListRoles" class="dropdown-item">
+                                    Roles
+                                </a>
+                                <a asp-controller="Administration" asp-action="ListUsers" class="dropdown-item">
+                                    Users
+                                </a>
+                            </div>
+                        </li>
+                    }
+
+                </ul>
+
+                <!-- 'ml-auto' sets the margin to the left of this ul-element to 'auto', displacing it to the right-most side of the navbar -->
+                <ul class="navbar-nav ml-auto">
+                    @if (signInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                    Logout @User.Identity.Name
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+        <div>
+            @RenderBody()
+        </div>
+    </div>
+    @RenderSection("Scripts", required : false)
+</body>
+</html>

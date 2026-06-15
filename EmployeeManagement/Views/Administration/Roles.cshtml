@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+<!-- Don't know why but if I don't do 'using' here then the AuthorizeAsync method below will not have the required overloaded method -->
+@using Microsoft.AspNetCore.Authorization
+
+@inject IAuthorizationService Auth
+
+@{
+	ViewBag.Title = "All Roles";
+}
+
+<h1>All Roles</h1>
+
+@if (Model.Any())
+{
+	<a asp-controller="Administration" asp-action="CreateRole" class="btn btn-primary mb-3" style="width:auto">
+		Add New Role
+	</a>
+
+	foreach(var role in Model)
+	{
+		<div class="card mb-3">
+			<div class="card-header">
+				Role ID: @role.Id
+			</div>
+
+			<div class="card-body">
+				<h5 class="card-title">
+					@role.Name
+				</h5>
+			</div>
+
+			<div class="card-footer">
+				<form method="post" asp-controller="Administration" asp-action="DeleteRole" asp-route-id="@role.Id">
+					@if ((await Auth.AuthorizeAsync(User, "SuperAdminPolicy")).Succeeded)
+						{
+							<a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edit</a>
+
+							<!-- 'id' attribute must be unique (using the Id-property of the 'user' variable) because otherwise we would be -->
+							<!-- pressing every single 'Yes' button of every 'Delete' span in the whole page source code.                   -->
+							<span id="deleteSpan_@role.Id">
+								<!-- Here, 'return false' prevents the page to go back to the top after the on-click event -->
+								<a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', true); return false">
+									Delete
+								</a>
+							</span>
+
+							<span id="confirmDeleteSpan_@role.Id" style="display:none">
+								<span>Are you sure?</span>
+								<button type="submit" class="btn btn-danger">Yes</button>
+								<!-- Here, 'return false' prevents the page to go back to the top after the on-click event -->
+								<a href="#" class="btn btn-primary" onclick="confirmDelete('@role.Id', false); return false">No</a>
+							</span>
+						}
+					</form>
+			</div>
+		</div>
+	}
+}
+else
+{
+	<div class="card">
+		<div class="card-header">
+			No Roles have been created yet
+		</div>
+
+		<div class="card-body">
+			<h5 class="card-title">
+				Use the button below to create a Role:
+			</h5>
+			<a asp-controller="Administration" asp-action="CreateRole" class="btn btn-primary" style="width:auto">
+				Create Role
+			</a>
+		</div>
+	</div>
+}
+
+@section Scripts {
+	<script src="~/js/customscript.js"></script>
+}

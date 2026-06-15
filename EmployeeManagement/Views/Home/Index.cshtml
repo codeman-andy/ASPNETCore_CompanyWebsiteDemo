@@ -1,0 +1,35 @@
+﻿@model IEnumerable<EmployeeManagement.Models.Employee>
+
+@{
+    ViewBag.Title = "Employees List";
+}
+
+<div class="card-deck">
+    @foreach (var employee in Model)
+    {
+        var photoPath = "~/images/" + (employee.PhotoPath ?? "noimage.jpg");
+
+        // The style used here sets a maximum of three employees per row
+        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+            <div class="cardheader">
+                <h3>@employee.Name</h3>
+            </div>
+            <!-- Image tag-helpers enhance the img-tag by providing cache-busting behavior for static-image files -->
+            <!-- Based on the content of the image, a unique cache-value is calculated and appended to the image-URL -->
+            <!-- Each time an image on the server-side is changed, a new hash value is calculated and cached again -->
+            <img src="@photoPath" class="card-img-top imageThumbnail" style="height:350px" asp-append-version="true" />
+
+            <div class="card-footer text-center">
+                <!-- An anchor-object cannot have tag-helpers AND the href attribute, as the -->
+                <!-- former will override the latter which constitutes an invalid operation -->
+                <a asp-controller="home" asp-action="details" asp-route-id="@employee.ID"
+                   class="btn btn-primary m-1">
+                   View
+                </a>
+                <a asp-controller="home" asp-action="edit" asp-route-id="@employee.ID"
+                   class="btn btn-primary m-1">Edit</a>
+                <a href="#" class="btn btn-danger m-1">Delete</a>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,35 @@
+﻿@model EmployeeManagement.ViewModels.AdministrationEditUsersInRoleViewModel
+
+@{
+	var roleID = ViewBag.RoleID;
+}
+
+<form method="post">
+	<div class="card">
+		<div class="card-header">
+			<h2>Add or Remove Users from this Role</h2>
+		</div>
+
+		<div class="card-body">
+			@for (int i = 0; i < Model.Users.Count; i++)
+				{
+					<div class="form-check m-1">
+						<input asp-for="@Model.IsSelected[i]" class="form-check-input"/>
+					<!-- Inside this label we could also put 'asp-for="Model.IsSelected[i]"' -->
+					<!-- which would make it so that clicking on the username would also work -->
+					<!-- to select that user, meaning the 'asp-for' tag-helper will record if -->
+					<!-- we select the username and update all other html-elements with the   -->
+					<!-- same 'asp-for' tag-helper to reflect this!                           -->
+						<label class="form-check-label">@Model.Users[i].UserName</label>
+					</div>
+				}
+		</div>
+
+		<div class="card-footer">
+			<button type="submit" class="btn btn-primary" style="width:auto">Update</button>
+			<a asp-controller="Administration" asp-action="EditRole" asp-route-id="@roleID" class="btn btn-primary" style="width:auto">
+				Cancel
+			</a>
+		</div>
+	</div>
+</form>
